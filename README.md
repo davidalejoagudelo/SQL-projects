@@ -1,5 +1,5 @@
 <div align="center">
-# SQL-PROJECTS
+<h1 align="center">SQL-PROJECTS 🐬</h1>
 </div>
 
 <div align="center">
