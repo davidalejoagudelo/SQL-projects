@@ -173,3 +173,53 @@ DELIMITER ;
 CALL sp_proceso_mejora_continua();
 
 -- Esto me dice que necesito una venta promedio de 1054.
+
+/* 9.9. Funciones */
+
+SELECT*
+FROM ventas;
+
+-- Vamos a calcular el proceso de mejora continua de cada empleado, en un 10%
+
+SELECT
+	venta_empleado,
+    ROUND(AVG(venta)*1.10,2) AS venta_promedio_mejora
+FROM ventas
+GROUP BY venta_empleado
+ORDER BY venta_empleado DESC;
+
+-- Ahora, hagamoslo pero con una función
+
+DELIMITER $$
+CREATE FUNCTION fn_mejora_empleado (parametro_empleado VARCHAR(7))
+RETURNS INTEGER
+READS SQL DATA -- Esto es un atributo. Mínimo 1, pero puede tener más
+BEGIN
+	DECLARE factor_mejora_continua DECIMAL(9,1) DEFAULT 0;
+    DECLARE ventas_conteo INT;
+    DECLARE ventas_total DECIMAL(9,1);
+    
+    SELECT
+		COUNT(*),
+        SUM(venta)
+	INTO
+		ventas_conteo,
+        ventas_total
+	FROM ventas
+    WHERE venta_empleado = parametro_empleado;
+    
+    SET factor_mejora_continua = ventas_total/ventas_conteo*1.10;
+    
+RETURN factor_mejora_continua; -- Siempre deve tener un RETURN (como C++)
+END$$
+DELIMITER ;
+
+-- Acá no se usa CALL, las funciones se pueden incluir dentro del SELECT
+
+SELECT
+	ID_empleado,
+    nombre,
+    fn_mejora_empleado(ID_empleado) AS venta_promedio_mejora
+FROM empleados
+ORDER BY ID_empleado DESC;
+    
