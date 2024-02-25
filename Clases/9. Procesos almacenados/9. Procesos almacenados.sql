@@ -219,7 +219,9 @@ DELIMITER ;
 SELECT
 	ID_empleado,
     nombre,
-    fn_mejora_empleado(ID_empleado) AS venta_promedio_mejora
+    fn_mejora_empleado(ID_empleado) AS Objetivo_venta
 FROM empleados
 ORDER BY ID_empleado DESC;
+
+-- En este caso, los que no tengan ventas registradas tendrán un valor NULL como salida de la función
     
