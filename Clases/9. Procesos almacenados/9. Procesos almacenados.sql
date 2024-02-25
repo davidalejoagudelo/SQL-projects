@@ -18,6 +18,7 @@ BEGIN
 END $$
 DELIMITER ;
 -- Ahora, en el esquema está el proceso almacenado
+-- Entre el BEGIN y el END se debe colocar ";" para terminar la consulta
 
 CALL sp_pizza(); -- Con esto se llama un proceso almacenado creado anteriormente
 
@@ -69,3 +70,37 @@ CALL sp_venta_producto('pzz',1);
 
 /* 9.7. Validación de parámetros */
 
+DELIMITER $$
+CREATE PROCEDURE sp_ventas_local (IN parametro_local_id INT, OUT parametro_suma_venta INT)
+BEGIN
+	SELECT
+		ID_local,
+        SUM(venta)
+	INTO
+		parametro_local_id,
+        parametro_suma_venta
+	FROM ventas
+    WHERE ID_local = parametro_local_id;
+END$$
+
+DELIMITER ;
+
+-- Dentro del INTO estoy declarando que el SELECT se haga dentro de los parámetros seleccionados.
+-- Puede verse redundante, pero afuera solo se definen los parámetros, pero dentro, estos deben ser aclarados para SQL
+
+CALL sp_ventas_local(1,0);
+
+-- Para que un proceso almacenado de una respuesta, hay que tener declarada una variable
+
+SET @param_local = 1;
+SET @suma_ventas = 0;
+
+-- Para declarar una variable, hay que asignarle un valor inicial
+
+CALL sp_ventas_local(@param_local,@suma_ventas);
+
+-- Ya se pudo ejecutar
+
+SELECT @suma_ventas;
+
+-- Esto complica las cosas, poque si se quiere ver otro local, hay que ejecutar la varable, luego el proceso almacenado, y luego de nuevo la variable
