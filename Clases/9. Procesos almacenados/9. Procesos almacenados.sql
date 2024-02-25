@@ -7,7 +7,7 @@ FROM ventas
 WHERE clave_producto = "pzz";
 
 -- Si necesitara esta tabla todos los días, lo mejor es crear un proceso almacenado
--- Se usa DEIMITER para definir el final del proceso almacenado. La consulta termina con ;, y el proceso termina con $$
+-- Se usa DELIMITER para definir el final del proceso almacenado. La consulta termina con ;, y el proceso termina con $$
 
 DELIMITER $$
 CREATE PROCEDURE sp_pizza() -- sp = stored procedure
